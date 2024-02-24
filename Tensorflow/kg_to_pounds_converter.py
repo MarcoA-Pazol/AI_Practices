@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import keras
-from keras.callbacks import TensorBoard
-import pandas as pd
+from keras.models import save_model, load_model
 
 """Datasets"""
 #Data arrays
@@ -15,34 +13,31 @@ for kg in kilogrames:
     
 pounds = np.array(pounds)
 
-#Data dict
-data_dict = {
-    "pound": pounds,
-    "kilograme": kilogrames
-}
-
-#Data frame
-data_frame = pd.DataFrame(data_dict)
-
 #Loading dataset
 x_train = kilogrames
 y_train = pounds
 
 """Keras Model"""
-#Architecture
-my_model = keras.models.Sequential([
-    keras.layers.Dense(units=1, input_shape = [1], activation="relu"),
-    keras.layers.Dense(1, activation="linear")
-])
+try:
+    model = loaded_model = load_model("C:/Users/raven/OneDrive/Escritorio/Coding/Python/Practices/AI_Practice/Trained_Models/kg_lb_model.h5")
+except:
+    #Architecture
+    model = keras.models.Sequential([
+        keras.layers.Dense(units=1, input_shape = [1], activation="relu"),
+        keras.layers.Dense(1, activation="linear")
+    ])
 
 #Compiling
-my_model.compile(optimizer = "adam", loss = "mean_squared_error")
+model.compile(optimizer = "adam", loss = "mean_squared_error")
 
 #Training
-epochs_hist = my_model.fit(x_train, y_train, epochs=100)
+epochs_hist = model.fit(x_train, y_train, epochs=100)
+
+#Saving model
+model.save("C:/Users/raven/OneDrive/Escritorio/Coding/Python/Practices/AI_Practice/Trained_Models/kg_lb_model.h5")
 
 print(epochs_hist.history.keys)
-print(my_model.summary())
+print(model.summary())
 print(kilogrames)
 print(pounds)
 
@@ -75,6 +70,10 @@ def predict(model:object, kg_input:float, kilogrames_array:object, pounds_array:
         kilogrames = np.concatenate(kilogrames, kg_added)
         pounds = np.concatenate(pounds, lb_added)
         succesfully:bool = True
+        x_train = kilogrames
+        y_train = pounds
+        model.fit(x_train, y_train, epochs=10)
+        model.save("C:/Users/raven/OneDrive/Escritorio/Coding/Python/Practices/AI_Practice/Trained_Models/kg_lb_model.h5") 
     else:
         succesfully:bool = False
     
@@ -82,4 +81,6 @@ def predict(model:object, kg_input:float, kilogrames_array:object, pounds_array:
     
     return result
     
-print(predict(my_model, 96, kilogrames, pounds))
+print(predict(model, 96, kilogrames, pounds))
+print(predict(model, 105, kilogrames, pounds))
+print(predict(model, 90, kilogrames, pounds))
