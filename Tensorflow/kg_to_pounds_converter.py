@@ -5,8 +5,12 @@ import matplotlib.pyplot as plt
 
 """Datasets"""
 #Data arrays
-kilogrames = np.array([1, 2, 5, 10, 17, 20, 50, 85, 100, 104, 177, 820, 1000, 1289, 5270])
-pounds = np.array([2.20462, 4.40925, 11.0231, 22.0462, 37.47854, 44.0924, 110.231, 187.3927, 220.462, 229.28048, 390.21774, 1807.7884, 2204.62, 2841.75518, 11618.3474])
+kilogrames = np.array([1, 2, 5, 10, 17, 20, 50, 85, 100, 104, 177, 820, 1000, 1289, 5270, 25, 50, 100, 200, 250, 500, 1000, 2000, 5000, 60, 70, 4, 3, 8, 12, 88, 94, 36, 55, 28, 71, 38])
+pounds = np.array([])
+for kg in kilogrames:
+    lb = kg * 2.20462
+    lb_array = np.array([lb])
+    pounds = np.concatenate((pounds, lb_array))
 
 #Loading dataset
 x_train = kilogrames
@@ -27,7 +31,7 @@ except:
 # epochs_hist = model.fit(x_train, y_train, epochs=300)
 
 # #Saving model
-# #model.save("C:/Users/raven/OneDrive/Escritorio/Coding/Python/Practices/AI_Practice/Trained_Models/kg_lb_model.h5")
+# model.save("C:/Users/raven/OneDrive/Escritorio/Coding/Python/Practices/AI_Practice/Trained_Models/kg_lb_model.h5")
 
 # print(epochs_hist.history.keys)
 # print(model.summary())
@@ -60,7 +64,7 @@ def predict(model:object, kg_input:float):
     predicted_pounds = model.predict(np.array([kg_input]))
     real_pounds = kg_input * 2.20462
     
-    threshold = 0.06
+    threshold = 0.05
     if abs(predicted_pounds - real_pounds) <= threshold:
         succesfully:bool = True
         print(abs(predicted_pounds - real_pounds), threshold)
